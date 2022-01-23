@@ -80,9 +80,12 @@ function tree() {
 
 	let canvas = document.getElementById("canvas");
 	let ctx = canvas.getContext("2d");
-	let _width = Number(document.getElementById("width").value);
-	let _height = Number(document.getElementById("height").value);
-	let _margin = Number(document.getElementById("margin").value);
+	let _width = document.getElementById("width").value;
+	let _height = document.getElementById("height").value;
+	let _margin = document.getElementById("margin").value;
+	if (_width == "") _width = 600; else _width = Number(_width);
+	if (_height == "") _height = 600; else _height = Number(_height);
+	if (_margin == "") _margin = 100; else _margin = Number(_margin);
 	if (isNaN(_width)) _width = 600;
 	if (isNaN(_height)) _height = 600;
 	if (isNaN(_margin)) _margin = 100;
@@ -90,6 +93,7 @@ function tree() {
 	if (_width > 32767) _width = 32767;
 	if (_height <= 1) _height = 600;
 	if (_height > 32767) _height = 32767;
+	if (_margin < 0) _margin = 100;
 	let width = _width, height = _height;
 	let margin = _margin;
 	canvas.width = width;
@@ -111,13 +115,13 @@ function tree() {
 		for (let j = 0; j < bmsmat.length; j++) {
 			let [ x, y ] = bms_to_screen(j + 1, start_heights[i] - bmsmat[j][i] - 2);
 			ctx.moveTo(x, y);
-			ctx.arc(x, y, 10, 0, 2*Math.PI);
+			ctx.arc(x, y, 5, 0, 2*Math.PI);
 			// console.log(x, y);
 		}
 	}
 	ctx.fill();
 	ctx.strokeStyle = "#FFF";
-	ctx.lineWidth = 3;
+	ctx.lineWidth = 2;
 	ctx.beginPath();
 	for (let i = 0; i < bmsmat[0].length; i++) {
 		// ctx.arc(rx, ry, 10, 0, 2*Math.PI);

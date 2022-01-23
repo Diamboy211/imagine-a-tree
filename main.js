@@ -14,7 +14,7 @@ function parse_bms(str) {
 				if (reading && cc >= 48 && cc <= 57) num = num * 10 + cc - 48;
 		}
 	}
-	let max = 0;
+	let max = 1;
 	for (let i = 0; i < mat.length; i++)
 		if (max < mat[i].length) max = mat[i].length;
 
@@ -55,6 +55,7 @@ function get_bad_roots(mat) {
 function tree() {
 	let bmsstr = document.getElementById("bmsmat").value;
 	let bmsmat = parse_bms(bmsstr);
+	console.log(bmsmat);
 
 	let max_heights = [];
 	let start_heights = [];
@@ -69,7 +70,9 @@ function tree() {
 		start_heights[i] = max_heights[i] + start_heights[i-1];
 	console.log(start_heights);
 
-	let tile_height = max_heights.reduce((a, b) => a + b);
+	let tile_height = 0;
+	for (let i = 0; i < max_heights.length; i++)
+		tile_height += max_heights[i];
 	let tile_width = bmsmat.length + 1;
 
 	let bad_roots = get_bad_roots(bmsmat);
@@ -77,11 +80,24 @@ function tree() {
 
 	let canvas = document.getElementById("canvas");
 	let ctx = canvas.getContext("2d");
-	let width = canvas.width, height = canvas.height;
+	let _width = Number(document.getElementById("width").value);
+	let _height = Number(document.getElementById("height").value);
+	let _margin = Number(document.getElementById("margin").value);
+	if (isNaN(_width)) _width = 600;
+	if (isNaN(_height)) _height = 600;
+	if (isNaN(_margin)) _margin = 100;
+	if (_width <= 1) _width = 600;
+	if (_width > 32767) _width = 32767;
+	if (_height <= 1) _height = 600;
+	if (_height > 32767) _height = 32767;
+	let width = _width, height = _height;
+	let margin = _margin;
+	canvas.width = width;
+	canvas.height = height;
 
 	let bms_to_screen = (x, y) => [
-		100 + (width - 200) / (tile_width - 1) * x,
-		100 + (height - 200) / (tile_height - 1) * y
+		margin + (width - margin*2) / (tile_width - 1) * x,
+		margin + (height - margin*2) / (tile_height - 1) * y
 	]
 	ctx.fillStyle = "#000";
 	ctx.fillRect(0, 0, width, height);
@@ -110,10 +126,9 @@ function tree() {
 			let [ x, y ] = bms_to_screen(j + 1, start_heights[i] - bmsmat[j][i] - 2);
 			let idy = idx != -1 ? bmsmat[idx][i] : -1;
 			let [ bx, by ] = bms_to_screen(idx + 1, start_heights[i] - idy - 2);
-			let rx = x - bx;
-			let ry = by - y;
+			let cx = (x+bx+(by-y)*0.3) / 2, cy = (y+by+(x-bx)*0.3) / 2;
 			ctx.moveTo(x, y);
-			ctx.ellipse(bx, y, rx, ry, 0, 0, Math.PI / 2);
+			ctx.quadraticCurveTo(cx, cy, bx, by);
 			// console.log(x, y);
 		}
 	}

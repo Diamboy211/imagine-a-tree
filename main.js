@@ -55,7 +55,6 @@ function get_bad_roots(mat) {
 function tree() {
 	let bmsstr = document.getElementById("bmsmat").value;
 	let bmsmat = parse_bms(bmsstr);
-	console.log(bmsmat);
 
 	let max_heights = [];
 	let start_heights = [];
@@ -68,7 +67,6 @@ function tree() {
 	start_heights[0] = max_heights[0];
 	for (let i = 1; i < max_heights.length; i++)
 		start_heights[i] = max_heights[i] + start_heights[i-1];
-	console.log(start_heights);
 
 	let tile_height = 0;
 	for (let i = 0; i < max_heights.length; i++)
@@ -76,7 +74,6 @@ function tree() {
 	let tile_width = bmsmat.length + 1;
 
 	let bad_roots = get_bad_roots(bmsmat);
-	console.log(bad_roots);
 
 	let canvas = document.getElementById("canvas");
 	let ctx = canvas.getContext("2d");
@@ -136,5 +133,66 @@ function tree() {
 			// console.log(x, y);
 		}
 	}
+	/*for (let i = 0; i <= tile_width; i++) {
+		ctx.moveTo(...bms_to_screen(i, 0));
+		ctx.lineTo(...bms_to_screen(i, tile_height));
+	}
+	for (let i = 0; i <= tile_height; i++) {
+		ctx.moveTo(...bms_to_screen(0, i));
+		ctx.lineTo(...bms_to_screen(tile_width, i));
+	}*/
 	ctx.stroke();
 }
+
+function get_link() {
+	let final_link = "https://diamboy211.github.io/imagine-a-tree/";
+	let width = document.getElementById("width").value;
+	let height = document.getElementById("height").value;
+	let margin = document.getElementById("margin").value;
+	let matrix = document.getElementById("bmsmat").value;
+	let more_than_one_query = false;
+	let check_shit = () => {
+		if (!more_than_one_query) {
+			more_than_one_query = true;
+			final_link += '?';
+		}
+		else final_link += '&'
+	}
+	if (width != "") {
+		check_shit();
+		final_link += "width=".concat(width);
+	}
+	if (height != "") {
+		check_shit();
+		final_link += "height=".concat(height);
+	}
+	if (margin != "") {
+		check_shit();
+		final_link += "margin=".concat(margin);
+	}
+	if (matrix != "") {
+		check_shit();
+		final_link += "matrix=".concat(matrix);
+	}
+	document.getElementById('link').href = final_link;
+	document.getElementById('link').textContent = final_link;
+}
+
+function main() {
+	let query_arr = window.location.search.substring(1).split('&');
+	let query_obj = {};
+	for (let i = 0; i < query_arr.length; i++)
+	{
+		let kv = query_arr[i].split('=');
+		query_obj[kv[0]] = kv[1];
+	}
+	document.getElementById("width").value = query_obj.width ?? "";
+	document.getElementById("height").value = query_obj.height ?? "";
+	document.getElementById("margin").value = query_obj.margin ?? "";
+	if (query_obj.matrix != null) {
+		document.getElementById("bmsmat").value = query_obj.matrix;
+		tree();
+	}
+}
+
+main();

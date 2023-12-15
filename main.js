@@ -142,6 +142,35 @@ function tree() {
 		ctx.lineTo(...bms_to_screen(tile_width, i));
 	}*/
 	ctx.stroke();
+	let lnz = 0;
+	for (; lnz < bmsmat[0].length && bad_roots[bmsmat.length - 1][lnz] != -1; lnz++);
+	lnz--;
+	if (lnz >= 0) {
+		let br = bad_roots[bmsmat[bmsmat.length - 1][lnz]][lnz];
+		ctx.fillStyle = "#F00";
+		ctx.beginPath();
+		for (let i = 0; i < bmsmat[0].length; i++) {
+			let [ x, y ] = bms_to_screen(bmsmat[br][i] + 1, start_heights[i] - bmsmat[br][i] - 2);
+			ctx.moveTo(x + 4, y);
+			ctx.arc(x, y, 4, 0, 2*Math.PI);
+		}
+		ctx.fill();
+		if (lnz >= 2) {
+			ctx.fillStyle = "#F0F";
+			ctx.beginPath();
+			for (let i = 0; i < lnz; i++)
+				for (let j = br + 1; j < bmsmat.length; j++) {
+					let c = j;
+					while (c > br) c = bad_roots[c][i];
+					if (c != br) {
+						let [ x, y ] = bms_to_screen(j + 1, start_heights[i] - bmsmat[j][i] - 2);
+						ctx.moveTo(x + 4, y);
+						ctx.arc(x, y, 4, 0, 2*Math.PI);
+					}
+				}
+			ctx.fill();
+		}
+	}
 }
 
 function get_link() {

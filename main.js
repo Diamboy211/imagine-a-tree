@@ -146,7 +146,7 @@ function tree() {
 	for (; lnz < bmsmat[0].length && bad_roots[bmsmat.length - 1][lnz] != -1; lnz++);
 	lnz--;
 	if (lnz >= 0) {
-		let br = bad_roots[bmsmat[bmsmat.length - 1][lnz]][lnz];
+		let br = bad_roots[bmsmat.length - 1][lnz];
 		ctx.fillStyle = "#F00";
 		ctx.beginPath();
 		for (let i = 0; i < bmsmat[0].length; i++) {

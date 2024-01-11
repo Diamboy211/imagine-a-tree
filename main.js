@@ -150,7 +150,7 @@ function tree() {
 		ctx.fillStyle = "#F00";
 		ctx.beginPath();
 		for (let i = 0; i < bmsmat[0].length; i++) {
-			let [ x, y ] = bms_to_screen(bmsmat[br][i] + 1, start_heights[i] - bmsmat[br][i] - 2);
+			let [ x, y ] = bms_to_screen(br + 1, start_heights[i] - bmsmat[br][i] - 2);
 			ctx.moveTo(x + 4, y);
 			ctx.arc(x, y, 4, 0, 2*Math.PI);
 		}
